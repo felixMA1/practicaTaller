@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Practica2.Models.Tipo>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <button type="button" class="btn btn-primary">
+        @Html.ActionLink("Alta", "Alta", null,new { @style = "color: white;" })
+    </button>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.descripcion)
+        </td>
+        <td>
+            <button type="button" class="btn btn-warning">
+                @Html.ActionLink("Editar", "Modificar", new { id = item.idTipo }, new { @style = "color: white;"})
+            </button>
+            <button type="button" class="btn btn-info" style="color: white">
+                @Html.ActionLink("Detalles", "Index", "Vehiculo", new {id = item.idTipo}, new {@style = "color: white;", target = "_blank"})
+            </button>
+            <button type="button" class="btn btn-danger">
+                @Html.ActionLink("Borrar", "Borrar", new {id = item.idTipo}, new {@style = "color: white;"})
+            </button>
+        </td>
+    </tr>
+}
+
+</table>

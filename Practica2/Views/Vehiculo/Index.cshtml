@@ -1,0 +1,118 @@
+﻿@model IEnumerable<Practica2.Models.Vehiculo>
+
+@{
+    ViewBag.Title = "Index";
+    var idTipo = ViewBag.idTipo;
+
+}
+
+<h2>Index</h2>
+
+<div class="text-center" style="margin-bottom: 25px;">
+    <form class="form-inline" role="form">
+        <label for="sel1">Selecciona un filtro</label>
+        <select class="form-control" id="sel1">
+            <option>Matricula</option>
+            <option>Marca</option>
+        </select>
+        <div class="form-group">
+            <input type="text" class="form-control" id="txtBusqueda" placeholder="Buscar..." />             
+        </div>
+        <button type="button" class="btn btn-default" id="btn">
+            <span class="glyphicon glyphicon-search"></span>
+        </button>
+    </form>
+</div>
+<div id="listado">
+    @Html.Partial("_listadoVehiculo", Model);
+</div>
+<div class="text-center">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+        Agregar
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Agregar</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline" role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="txtMatricula"
+                                   placeholder="Introduce una matricula">
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="txtMarca"
+                                   placeholder="Introduce una marca">
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="txtModelo"
+                                   placeholder="Introduce un modelo">
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="txtCoste"
+                                   placeholder="Introduce un precio de coste">
+                        </div>
+                        <br />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardar" data-dismiss="modal">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section MiJavaScript
+{
+    <script>
+
+        function alta() {
+            var data = {
+                matricula: $("#txtMatricula").val(),
+                marca: $("#txtMarca").val(),
+                modelo: $("#txtModelo").val(),
+                coste: $("#txtCoste").val(),
+                idTipo: "@ViewBag.idTipo"
+            }
+
+            var url = "@Url.Action("Alta")";
+            $.ajax({
+                url: url,
+                data: JSON.stringify(data),
+                type: "POST",
+                headers: { "Content-Type": "application/json" },
+                dataType: "json",
+                success: function (res) {
+                    console.log(res);
+                    if (res.idVehiculo > 0) {
+                        $("#txtBusqueda").val("");
+                        listado();
+                    } else {
+                        alert("Error al guardar");
+                    }
+                }
+            });
+        }
+        function listado() {
+
+            var url = "@Url.Action("Buscar")";
+            var txt = $("#txtBusqueda").val();
+            url += "?busqueda=" + txt + "&id=" + @ViewBag.idTipo+"&filtro="+$("#sel1").val();
+            console.log(url);
+            $("#listado").load(encodeURI(url));
+        }
+        $("#btnGuardar").click(alta);
+        $("#btn").click(listado);
+    </script>
+}
