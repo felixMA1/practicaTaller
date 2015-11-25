@@ -7,12 +7,15 @@ using Practica2.Models;
 
 namespace Practica2.Controllers
 {
+    [Authorize]
     public class TipoController : Controller
     {
         TallerEntities db = new TallerEntities();
         // GET: Tipo
         public ActionResult Index()
         {
+
+
             var data = db.Tipo;
             return View(data);
         }

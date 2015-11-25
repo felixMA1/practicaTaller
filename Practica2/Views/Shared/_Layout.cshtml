@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Practica2.Seguridad
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -18,21 +19,35 @@
                     <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var u = User as PrincipalPersonalizado;
+                    @u.MiIdentidadPersonalizado.Name
+                } 
+
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("LogOff", "LogOff", "Login")</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+<div class="container body-content">
+    <!--AppState["horaLogin"] != null-->
+    @if (Session["horaLogin"] != null)
+    {
+        var d = (DateTime) Session["horaLogin"];
+        @String.Format("{0:t}", d)
+        ;
+    }
+    @RenderBody()
+    <hr/>
+    <footer>
+        <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+    </footer>
+</div>
 
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/bootstrap.min.js"></script>

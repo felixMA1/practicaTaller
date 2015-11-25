@@ -8,6 +8,9 @@
         <EntityTypeShape EntityType="TallerModel.Tipo" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
         <EntityTypeShape EntityType="TallerModel.Vehiculo" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="TallerModel.FK_Vehiculo_Tipo" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TallerModel.Rol" Width="1.5" PointX="0.75" PointY="5.125" />
+        <EntityTypeShape EntityType="TallerModel.Usuario" Width="1.5" PointX="3" PointY="4.875" />
+        <AssociationConnector Association="TallerModel.FK_Usuario_Rol" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

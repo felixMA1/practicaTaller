@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Practica2.Seguridad;
 
 namespace Practica2
 {
@@ -13,6 +14,18 @@ namespace Practica2
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+        }
+        protected void Application_PostAuthenticateRequest(Object sender,
+    EventArgs e)
+        {
+            if (Request.IsAuthenticated)
+            {
+                var identity =
+                    new IdentityPersonalizado(
+                        HttpContext.Current.User.Identity);
+                var principal = new PrincipalPersonalizado(identity);
+                HttpContext.Current.User = principal;
+            }
         }
     }
 }

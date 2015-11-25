@@ -4,7 +4,14 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="TallerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="TallerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Rol">
+          <Key>
+            <PropertyRef Name="idRol" />
+          </Key>
+          <Property Name="idRol" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Tipo">
           <Key>
             <PropertyRef Name="idTipo" />
@@ -12,6 +19,15 @@
           <Property Name="idTipo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="descripcion" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="idUsuario" />
+          </Key>
+          <Property Name="idUsuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="login" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="idRol" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Vehiculo">
           <Key>
@@ -24,6 +40,18 @@
           <Property Name="coste" Type="float" Nullable="false" />
           <Property Name="idTipo" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Usuario_Rol">
+          <End Role="Rol" Type="Self.Rol" Multiplicity="1" />
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rol">
+              <PropertyRef Name="idRol" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="idRol" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Vehiculo_Tipo">
           <End Role="Tipo" Type="Self.Tipo" Multiplicity="1" />
           <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="*" />
@@ -37,15 +65,20 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="TallerModelStoreContainer">
+          <EntitySet Name="Rol" EntityType="Self.Rol" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tipo" EntityType="Self.Tipo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vehiculo" EntityType="Self.Vehiculo" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Usuario_Rol" Association="Self.FK_Usuario_Rol">
+            <End Role="Rol" EntitySet="Rol" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
           <AssociationSet Name="FK_Vehiculo_Tipo" Association="Self.FK_Vehiculo_Tipo">
             <End Role="Tipo" EntitySet="Tipo" />
             <End Role="Vehiculo" EntitySet="Vehiculo" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="TallerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -89,7 +122,43 @@
             <End Role="Tipo" EntitySet="Tipo" />
             <End Role="Vehiculo" EntitySet="Vehiculo" />
           </AssociationSet>
+          <EntitySet Name="Rol" EntityType="TallerModel.Rol" />
+          <EntitySet Name="Usuario" EntityType="TallerModel.Usuario" />
+          <AssociationSet Name="FK_Usuario_Rol" Association="TallerModel.FK_Usuario_Rol">
+            <End Role="Rol" EntitySet="Rol" />
+            <End Role="Usuario" EntitySet="Usuario" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Rol">
+          <Key>
+            <PropertyRef Name="idRol" />
+          </Key>
+          <Property Name="idRol" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Usuario" Relationship="TallerModel.FK_Usuario_Rol" FromRole="Rol" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="idUsuario" />
+          </Key>
+          <Property Name="idUsuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="login" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="idRol" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Rol" Relationship="TallerModel.FK_Usuario_Rol" FromRole="Usuario" ToRole="Rol" />
+        </EntityType>
+        <Association Name="FK_Usuario_Rol">
+          <End Type="TallerModel.Rol" Role="Rol" Multiplicity="1" />
+          <End Type="TallerModel.Usuario" Role="Usuario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rol">
+              <PropertyRef Name="idRol" />
+            </Principal>
+            <Dependent Role="Usuario">
+              <PropertyRef Name="idRol" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -114,6 +183,24 @@
                 <ScalarProperty Name="modelo" ColumnName="modelo" />
                 <ScalarProperty Name="coste" ColumnName="coste" />
                 <ScalarProperty Name="idTipo" ColumnName="idTipo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rol">
+            <EntityTypeMapping TypeName="TallerModel.Rol">
+              <MappingFragment StoreEntitySet="Rol">
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="idRol" ColumnName="idRol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuario">
+            <EntityTypeMapping TypeName="TallerModel.Usuario">
+              <MappingFragment StoreEntitySet="Usuario">
+                <ScalarProperty Name="idRol" ColumnName="idRol" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="login" ColumnName="login" />
+                <ScalarProperty Name="idUsuario" ColumnName="idUsuario" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

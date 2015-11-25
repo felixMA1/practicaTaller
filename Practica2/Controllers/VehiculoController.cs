@@ -7,6 +7,8 @@ using Practica2.Models;
 
 namespace Practica2.Controllers
 {
+
+    [Authorize]
     public class VehiculoController : Controller
     {
         TallerEntities db = new TallerEntities();
